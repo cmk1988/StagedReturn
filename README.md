@@ -41,7 +41,7 @@ How would we use it? Right like this:
 ```csharp
 var calculator = new SimpleCalculator();
 calculator.SetStartValues(2, 5);
-calculator.Adition();
+calculator.Addition();
 var result = calculator.GetResult();
 ```
 
@@ -60,5 +60,82 @@ even if everything is working well if the class is used correctly.
 So we will take the possibility to always call every method and responsibility away from the user. It should be our job to design the class foolproof. The idea is to let the user just call methods fitting to the current state of the class. Sounds really simple and you will see, it is simple!
 
 How can we achieve this? There are different ways to do it, but we will choose the way of creating nested stage classes. You are asking why not just using different interfaces and every interface implements one method? We could just return the right interface instead of using void methods. Yes that is true but it is not fool proofed. If our class implements all the interfaces, the user has the possibility to cast. And if it is crashing again the user will make us responsive for it. So we will use the stage classes instead.
+
+#### The following is our concept of stages:
+1. First stage is our root class. A static creator method, taking the start parameters, returns the second stage class.
+2. The second stage class calculates the result, returns the third stage.
+3. The third stage is just a container containing the result.
+
+You can have multiple count of stages, not only three. But to show the concept it is enough. 
+
+Later our class should look like this:
+
+```csharp
+    public class SimpleCalculator
+    {
+        public interface IStage2
+        {
+            IResultStage Addition();
+        }
+
+        public interface IResultStage
+        {
+            int GetResult();
+        }
+
+        internal abstract class StageBase
+        {
+            protected SimpleCalculator state;
+            public StageBase(SimpleCalculator state)
+            {
+                this.state = state;
+            }
+        }
+
+        internal class Stage2 : StageBase, IStage2
+        {
+            internal Stage2(SimpleCalculator state) : base(state) { }
+            public IResultStage Addition()
+            {
+                state.result = state.iValue1 + state.iValue2;
+                return new ResultStage(state);
+            }
+        }
+
+        internal class ResultStage : StageBase, IResultStage
+        {
+            internal ResultStage(SimpleCalculator state) : base(state) { }
+            public int GetResult()
+            {
+                return state.result.Value;
+            }
+        }
+
+        private int? iValue1;
+        private int? iValue2;
+        private int? result;
+
+        private SimpleCalculator() { }
+
+        public static IStage2 SetStartValues(int i1, int i2)
+        {
+            return new Stage2(new SimpleCalculator
+            {
+                iValue1 = i1,
+                iValue2 = i2
+            });
+        }
+    }
+```
+And the call will look like this:
+```csharp
+var result = SimpleCalculator.SetStartValues(2, 5)
+    .Addition()
+    .GetResult();
+```
+
+## Creating the stages
+
+Now we start creating our first stage.
 
 TO BE CONTINUED...

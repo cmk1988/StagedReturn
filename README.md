@@ -1,4 +1,4 @@
-# StagedReturn
+# Staged returns
 This is an example of a concept to call methods in a chain.
 
 ## Introduction

@@ -136,6 +136,7 @@ var result = SimpleCalculator.SetStartValues(2, 5)
     .Addition()
     .GetResult();
 ```
+How you see, it is not possible to call Addition on first, anymore.
 
 ## Creating the stages
 

@@ -1,4 +1,4 @@
-# Staged returns
+# Staged Method Supply
 This is an example of a concept to call methods in a chain.
 
 ## Introduction

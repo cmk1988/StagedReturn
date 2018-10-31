@@ -71,18 +71,20 @@ You can have multiple count of stages, not only three. But to show the concept i
 Later our class should look like this:
 
 ```csharp
+namespace ClassLibrary
+{
+    public interface IStage2
+    {
+        IResultStage Addition();
+    }
+
+    public interface IResultStage
+    {
+        int GetResult();
+    }
+
     public class SimpleCalculator
     {
-        public interface IStage2
-        {
-            IResultStage Addition();
-        }
-
-        public interface IResultStage
-        {
-            int GetResult();
-        }
-
         internal abstract class StageBase
         {
             protected SimpleCalculator state;
@@ -126,6 +128,7 @@ Later our class should look like this:
             });
         }
     }
+}
 ```
 And the call will look like this:
 ```csharp
